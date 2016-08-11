@@ -1,0 +1,27 @@
+{
+    "name": "fredyns/yii2-lbac",
+    "description": "Logic Based Access Control",
+    "type": "yii2-extension",
+    "keywords": [
+        "yii2",
+        "extension",
+        "lbac",
+        "access control",
+        "RBAC"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fredy Nurman Saleh",
+            "email": "email@fredyns.net"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "fredyns\\lbac\\": ""
+        }
+    }
+}
