@@ -1,6 +1,12 @@
-Yii2 Components
+Yii2 LBAC
 ===============
-Some helpers for Yii2
+Logic Based Access Control
+
+a wrapper for RBAC, ACL plus **logical layer** to manage access control.
+
+the concept is the same with RBAC or ACL, but we can easily insert logical layer (script) onto it.
+permissions populated in classes based on it's context.
+or bound to a model to manage it's access control.
 
 Installation
 ------------
