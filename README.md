@@ -31,7 +31,4 @@ to the require section of your `composer.json` file.
 Usage
 -----
 
-Once the extension is installed, simply use it in your code by  :
-
-```php
-<?= \fredyns\lbac\AutoloadExample::widget(); ?>```
+**TBD**
