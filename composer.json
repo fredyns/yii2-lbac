@@ -17,7 +17,9 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "kartik-v/yii2-icons": "^1.4",
+        "cornernote/yii2-returnurl": "*"
     },
     "autoload": {
         "psr-4": {
