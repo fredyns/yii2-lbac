@@ -30,7 +30,7 @@ class BaseAccessControl extends Object
     public $link_separator = ' &centerdot; ';
     public $align          = 'right';
 
-    public function setError($name = NULL, $message = '')
+    public function addError($name = NULL, $message = '')
     {
         $this->error[$name][] = $message;
     }
@@ -43,6 +43,13 @@ class BaseAccessControl extends Object
         }
 
         return ArrayHelper::getValue($this->errors, $name);
+    }
+
+    public function isError($name)
+    {
+        $error = ArrayHelper::getValue($this->errors, $name);
+
+        return (empty($error) == FALSE);
     }
 
     public function allow($name = null)
