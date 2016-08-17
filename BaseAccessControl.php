@@ -155,7 +155,7 @@ class BaseAccessControl extends Object
 
     public function exception($name = '')
     {
-        return new UserException($this->getError($name));
+        return new UserException(implode(chr(13), $this->getError($name)));
     }
     //* ================ hyperlink ================ *//
 
