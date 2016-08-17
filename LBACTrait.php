@@ -8,13 +8,16 @@
 namespace fredyns\lbac;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use fredyns\lbac\Permission;
 
 /**
  * Description of LBACTrait
  *
- * @property Permission $_action permission container
- * @property Permission $_operation permission container
+ * @property string $label label for link
+ * @property string $linkTo link to view detail
+ *
+ * @property Permission $lbac permission container
  *
  * @author Fredy Nurman Saleh <email@fredyns.net>
  */
@@ -28,12 +31,12 @@ class LBACTrait
      *
      * @return string
      */
-    public static function LBAC()
+    public static function lbacClass()
     {
         return Permission::classname();
     }
 
-    public static function action()
+    public static function lbac()
     {
         if (empty(static::$_action))
         {
@@ -43,7 +46,7 @@ class LBACTrait
         return static::$_action;
     }
 
-    public function getOperation()
+    public function getLbac()
     {
         if (empty($this->_operation))
         {
@@ -59,6 +62,36 @@ class LBACTrait
         }
 
         return $this->_operation;
+    }
+
+    public function getLabel()
+    {
+        $alternatives = ['label', 'name', 'title', 'number', 'id'];
+
+        foreach ($alternatives as $attribute)
+        {
+            if ($this->model->hasAttribute($attribute))
+            {
+                return $this->getAttribute($attribute);
+            }
+        }
+
+        return 'view '.get_called_class();
+    }
+
+    /**
+     * generate link to page that show model detail
+     *
+     * @param string $label
+     * @param array $linkOptions
+     * @return string
+     */
+    public function getLinkTo($linkOptions = ['title' => 'view detail'])
+    {
+        $label = ArrayHelper::remove($linkOptions, $this->label);
+        $url   = $this->lbac->url('view', $linkOptions);
+
+        return Html::a($label, $url, $linkOptions);
     }
 
 }

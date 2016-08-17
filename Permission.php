@@ -3,7 +3,6 @@
 namespace fredyns\lbac;
 
 use Yii;
-use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use cornernote\returnurl\ReturnUrl;
 use kartik\icons\Icon;
@@ -17,50 +16,13 @@ use kartik\icons\Icon;
  */
 class Permission extends \fredyns\lbac\BasePermission
 {
-    public $widget_type    = 'dropdown';
-    public $link_separator = ' &centerdot; ';
-    public $align          = 'right';
-    public $menu_divider   = '<li role="presentation" class="divider"></li>';
 
     public function defaultAction()
     {
-        return ['index', 'create'];
-    }
-
-    public function defaultOperations()
-    {
-        return ['view', 'update', 'delete'];
+        return ($this->model) ? ['view', 'update', 'delete'] : ['index', 'create'];
     }
 
     public function actions()
-    {
-        return [
-            'index'  => [
-                'label'         => 'List',
-                'url'           => [
-                    $this->route('index'),
-                    'ru' => ReturnUrl::getToken(),
-                ],
-                'icon'          => Icon::show('list'),
-                'buttonOptions' => [
-                    'class' => 'btn btn-default',
-                ],
-            ],
-            'create' => [
-                'label'         => 'Create',
-                'url'           => [
-                    $this->route('create'),
-                    'ru' => ReturnUrl::getToken(),
-                ],
-                'icon'          => Icon::show('plus'),
-                'buttonOptions' => [
-                    'class' => 'btn btn-info',
-                ],
-            ],
-        ];
-    }
-
-    public function operations()
     {
         $params = [
             'ru' => ReturnUrl::getToken(),
@@ -75,6 +37,28 @@ class Permission extends \fredyns\lbac\BasePermission
         }
 
         return [
+            'index'  => [
+                'label'         => 'List',
+                'url'           => [
+                    $this->route('index'),
+                    'ru' => $params['ru'],
+                ],
+                'icon'          => Icon::show('list'),
+                'buttonOptions' => [
+                    'class' => 'btn btn-default',
+                ],
+            ],
+            'create' => [
+                'label'         => 'Create',
+                'url'           => [
+                    $this->route('create'),
+                    'ru' => $params['ru'],
+                ],
+                'icon'          => Icon::show('plus'),
+                'buttonOptions' => [
+                    'class' => 'btn btn-info',
+                ],
+            ],
             'view'   => [
                 'label'         => 'View',
                 'url'           => ArrayHelper::merge([$this->route('view')], $params),
