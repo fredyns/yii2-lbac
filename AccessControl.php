@@ -14,7 +14,7 @@ use kartik\icons\Icon;
  *
  * @author fredy
  */
-class Permission extends \fredyns\lbac\BasePermission
+class AccessControl extends \fredyns\lbac\BaseAccessControl
 {
 
     public function defaultAction()
