@@ -24,17 +24,14 @@ class AccessControl extends \fredyns\lbac\BaseAccessControl
 
     public function actions()
     {
-        $params = [
-            'ru' => ReturnUrl::getToken(),
-        ];
+        $params = [];
 
         if ($this->model && $this->model instanceof yii\db\ActiveRecord)
         {
-            foreach ($this->model->primaryKey() as $attribute)
-            {
-                $params[$attribute] = $this->model->getAttribute($attribute);
-            }
+            $params = $this->model->getPrimaryKey(true);
         }
+
+        $params['ru'] = ReturnUrl::getToken();
 
         return [
             'index'  => [
@@ -158,6 +155,40 @@ class AccessControl extends \fredyns\lbac\BaseAccessControl
 
         // conclusion
         return ($this->isError('delete') == FALSE);
+    }
+
+    public function yiiActionColumn()
+    {
+        return [
+            'class'          => 'yii\grid\ActionColumn',
+            'contentOptions' => ['nowrap' => 'nowrap'],
+            'content'        => function ($model, $key, $index, $column)
+        {
+            if (method_exists($model, 'getDropdownMenu'))
+            {
+                return $model->getDropdownMenu();
+            }
+
+            return 'LBAC not set';
+        },
+        ];
+    }
+
+    public function kartikActionColumn()
+    {
+        return [
+            'class'          => 'kartik\grid\ActionColumn',
+            'contentOptions' => ['nowrap' => 'nowrap'],
+            'content'        => function ($model, $key, $index, $column)
+        {
+            if (method_exists($model, 'getDropdownMenu'))
+            {
+                return $model->getDropdownMenu();
+            }
+
+            return 'LBAC not set';
+        },
+        ];
     }
 
 }
