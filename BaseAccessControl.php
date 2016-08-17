@@ -140,17 +140,17 @@ class BaseAccessControl extends Object
 
     public function allowView()
     {
-        return isset($this->model);
+        return (bool) $this->model;
     }
 
     public function allowUpdate()
     {
-        return isset($this->model);
+        return (bool) $this->model;
     }
 
     public function allowDelete()
     {
-        return isset($this->model);
+        return (bool) $this->model;
     }
 
     public function exception($name = '')
