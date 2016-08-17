@@ -282,118 +282,23 @@ class BaseAccessControl extends Object
     //* ================ widget ================ *//
 
     /**
-     * generate items parameter for dropdown menu
-     *
-     * @param array $items access list to be shown
-     * @return array
-     */
-    public function dropdownItems($items = [])
-    {
-        $params    = [];
-        $count     = 0;
-        $lastParam = NULL;
-
-        foreach ($items as $item)
-        {
-            if (is_string($item) && $item !== static::MENU_DIVIDER)
-            {
-                $param = $this->param($item);
-                $allow = $this->allow($item);
-
-                if ($param && $allow)
-                {
-                    $params[]  = $this->prepareParam($param, ['icon']);
-                    $lastParam = $param;
-                    $count++;
-                }
-            }
-            else if (is_array($item) OR ( $count > 0 && $item !== $lastParam ))
-            {
-                $params[]  = $param;
-                $lastParam = $param;
-                $count++;
-            }
-        }
-
-        return $params;
-    }
-
-    /**
-     * prepare parameter for regular link or button
-     *
-     * @param Array $param
-     * @param Array $use_elements used feature: icon|button
-     * @return Array
-     */
-    public function prepareParam($param, $use_elements = [])
-    {
-        $icon          = ArrayHelper::remove($param, 'icon');
-        $buttonOptions = ArrayHelper::remove($param, 'buttonOptions');
-
-        if (in_array('icon', $use_elements) && $icon && isset($param['label']))
-        {
-            $param['label'] = $icon.' '.$param['label'];
-        }
-
-        if (in_array('button', $use_elements) && $buttonOptions && isset($param['linkOptions']))
-        {
-            $param['linkOptions'] = ArrayHelper::merge($param['linkOptions'], $buttonOptions);
-        }
-
-        return $param;
-    }
-
-    /**
      * generate dropdown widget
      *
      * @param array $items
      * @param array $options
      * @return string
      */
-    public function dropdownMenu($items = [], $options = [])
+    public function dropdownMenu($actions = [])
     {
-        if (!$items)
+        if (empty($actions))
         {
-            $items = $this->defaultAction();
+            $actions = $this->defaultAction();
         }
 
-        if ($this->model && $this->model instanceof yii\db\ActiveRecord)
-        {
-            $elementId = Inflector::camel2id($this->model->tableName());
-
-            foreach ($this->model->primaryKey() as $attribute)
-            {
-                $elementId .= '_'.$this->model->getAttribute($attribute);
-            }
-        }
-        else
-        {
-            $elementId = get_called_class();
-        }
-
-        $buttonConfig = [
-            'id'          => $elementId,
-            'encodeLabel' => false,
-            'label'       => 'Action',
-            'dropdown'    => [
-                'options'      => [
-                    'class' => 'dropdown-menu-'.$this->align,
-                ],
-                'encodeLabels' => false,
-                'items'        => $this->dropdownItems($items),
-            ],
-            'options'     => [
-                'class' => 'btn btn-primary',
-            ],
-        ];
-
-        if ($options)
-        {
-            $buttonConfig = ArrayHelper::merge($buttonConfig, $options);
-        }
-
-        /* dropdown menu */
-        return \yii\bootstrap\ButtonDropdown::widget($buttonConfig);
+        return ButtonDropdown::widget([
+                'lbac'    => $this,
+                'actions' => $actions,
+        ]);
     }
 
     /**
@@ -404,7 +309,7 @@ class BaseAccessControl extends Object
      */
     public function buttonMenu($items = [])
     {
-        if (!$items)
+        if (empty($items))
         {
             $items = $this->defaultAction();
         }
@@ -445,7 +350,7 @@ class BaseAccessControl extends Object
      */
     public function linkMenu($items = [])
     {
-        if (!$items)
+        if (empty($items))
         {
             $items = $this->defaultAction();
         }

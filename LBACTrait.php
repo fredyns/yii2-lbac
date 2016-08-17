@@ -9,15 +9,16 @@ namespace fredyns\lbac;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use fredyns\lbac\Permission;
+use fredyns\lbac\AccessControl;
 
 /**
  * Description of LBACTrait
  *
  * @property string $label label for link
  * @property string $linkTo link to view detail
+ * @property string $dropdownMenu model operastion menu
  *
- * @property Permission $lbac permission container
+ * @property AccessControl $lbac permission container
  *
  * @author Fredy Nurman Saleh <email@fredyns.net>
  */
@@ -33,7 +34,7 @@ class LBACTrait
      */
     public static function lbacClass()
     {
-        return Permission::classname();
+        return AccessControl::classname();
     }
 
     public static function lbac()
@@ -92,6 +93,11 @@ class LBACTrait
         $url   = $this->lbac->url('view', $linkOptions);
 
         return Html::a($label, $url, $linkOptions);
+    }
+
+    public function getDropdownMenu($actions = [])
+    {
+        return $this->lbac->dropdownMenu($actions);
     }
 
 }
