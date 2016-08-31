@@ -2,7 +2,7 @@
 
 namespace fredyns\lbac;
 
-use \fredyns\lbac\AccessControl;
+use \fredyns\lbac\LogicControl;
 
 /**
  * Description of ButtonDropdown
@@ -20,7 +20,7 @@ class ButtonDropdown extends \yii\bootstrap\ButtonDropdown
     public $align               = 'right';
 
     /**
-     * @var \fredyns\lbac\AccessControl
+     * @var \fredyns\lbac\LogicControl
      */
     public $lbac;
     public $actions = [];
@@ -85,7 +85,7 @@ class ButtonDropdown extends \yii\bootstrap\ButtonDropdown
 
         foreach ($this->actions as $action)
         {
-            if (is_string($action) && $action !== AccessControl::MENU_DIVIDER)
+            if (is_string($action) && $action !== LogicControl::MENU_DIVIDER)
             {
                 $param = $this->lbac->param($action);
                 $allow = $this->lbac->allow($action);
