@@ -16,7 +16,7 @@ use yii\base\UserException;
  *
  * @author Fredy Nurman Saleh <email@fredyns.net>
  */
-class BaseAccessControl extends Object
+class BaseLogicControl extends Object
 {
     const WIDGET_DROPDOWN = 'dropdown';
     const WIDGET_LINK     = 'link';
