@@ -1,9 +1,4 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 namespace fredyns\lbac;
 
@@ -12,7 +7,7 @@ use yii\helpers\ArrayHelper;
 use fredyns\lbac\LogicControl;
 
 /**
- * Description of LBACTrait
+ * attach LBAC to model
  *
  * @property string $label label for link
  * @property string $linkTo link to view detail
@@ -22,7 +17,7 @@ use fredyns\lbac\LogicControl;
  *
  * @author Fredy Nurman Saleh <email@fredyns.net>
  */
-class LBACTrait
+trait LBACTrait
 {
     protected static $_action;
     protected $_operation;
@@ -37,6 +32,11 @@ class LBACTrait
         return LogicControl::classname();
     }
 
+    /**
+     * get logic control for model scope (in static mode)
+     *
+     * @return LogicControl
+     */
     public static function lbac()
     {
         if (empty(static::$_action))
@@ -47,6 +47,11 @@ class LBACTrait
         return static::$_action;
     }
 
+    /**
+     * get logic control for model instance
+     *
+     * @return LogicControl
+     */
     public function getLbac()
     {
         if (empty($this->_operation))
@@ -65,6 +70,11 @@ class LBACTrait
         return $this->_operation;
     }
 
+    /**
+     * get model label/name 
+     *
+     * @return string
+     */
     public function getLabel()
     {
         $alternatives = ['label', 'name', 'title', 'number', 'id'];
