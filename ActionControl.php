@@ -5,6 +5,7 @@ namespace fredyns\lbac;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Inflector;
 USE yii\web\ForbiddenHttpException;
 USE yii\web\NotFoundHttpException;
@@ -99,7 +100,7 @@ class ActionControl extends \yii\base\Object
      */
     public function allow($action)
     {
-        if (isset($this->allowed[$action]) == FALSE)
+        if (array_key_exists($action, $this->allowed) == FALSE)
         {
             $function = 'getAllow'.ucfirst($action);
 
