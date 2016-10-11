@@ -717,4 +717,53 @@ class ActionControl extends \yii\base\Object
         }
     }
 
+    /**
+     * all breadcrumb labels
+     *
+     * @return array
+     */
+    public function breadcrumbLabels()
+    {
+        return [
+            'index'  => 'List',
+            'create' => 'Create',
+            'view'   => '#'.implode('-', $this->modelParam()),
+            'update' => 'Edit',
+            'delete' => 'Delete',
+        ];
+    }
+
+    /**
+     * spesific breadcrumb label
+     *
+     * @return array
+     */
+    public function breadcrumbLabel($name)
+    {
+        return ArrayHelper::getValue($this->breadcrumbLabels(), $name, '#');
+    }
+
+    /**
+     * generate breadcrumb link item
+     * if user is not permitted to access page/url, only label will be returned
+     *
+     * @param string $name
+     * @param array $options
+     * @return array|string
+     */
+    public function breadcrumbItem($name, $options = [])
+    {
+        if ($this->allow($name))
+        {
+            return ArrayHelper::merge([
+                    'label' => $this->breadcrumbLabel($name),
+                    'url'   => $this->url($name),
+                    ], $options);
+        }
+        else
+        {
+            return $this->breadcrumbLabel($name);
+        }
+    }
+
 }
