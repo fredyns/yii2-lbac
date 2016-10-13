@@ -19,13 +19,15 @@ use kartik\icons\Icon;
  * @author Fredy Nurman Saleh <email@fredyns.net>
  *
  * @property string $allowIndex is allowing accessing index page
+ * @property string $allowDeleted is allowing accessing deleted page
  * @property string $allowView is allowing accessing view page
  * @property string $allowCreate is allowing accessing create page
  * @property string $allowUpdate is allowing accessing update page
  * @property string $allowDelete is allowing to delete model
  * @property string $allowRestore is allowing to restore model
- * 
+ *
  * @property array $urlIndex url config for Index page
+ * @property array $urlDeleted url config for Deleted page
  * @property array $urlCreate url config for Create page
  * @property array $urlView url config for View page
  * @property array $urlUpdate url config for Update page
@@ -135,6 +137,18 @@ class ActionControl extends \yii\base\Object
     public function getAllowIndex()
     {
         return TRUE;
+    }
+
+    /**
+     * check permission to access Deleted page
+     *
+     * @return boolean
+     */
+    public function getAllowDeleted()
+    {
+        $this->addError('deleted', "Deleted model page is not configured properly.");
+        // default false karna tidak semua support
+        return FALSE;
     }
 
     /**
@@ -316,6 +330,14 @@ class ActionControl extends \yii\base\Object
         ];
     }
 
+    public function getUrlDeleted()
+    {
+        return [
+            $this->actionRoute('deleted'),
+            'ru' => ReturnUrl::getToken(),
+        ];
+    }
+
     public function getUrlCreate()
     {
         return [
@@ -395,7 +417,7 @@ class ActionControl extends \yii\base\Object
             }
         }
 
-        return ['index', 'create'];
+        return ['index', 'create', 'deleted'];
     }
 
     /**
@@ -417,6 +439,19 @@ class ActionControl extends \yii\base\Object
                 ],
                 'buttonOptions' => [
                     'class' => 'btn btn-default',
+                ],
+            ],
+            'deleted' => [
+                'label'         => 'Deleted',
+                'url'           => $this->urlDeleted,
+                'icon'          => Icon::show('trash'),
+                'options'       => [
+                    'title'      => 'Deleted data',
+                    'aria-label' => 'Deleted',
+                    'data-pjax'  => '0',
+                ],
+                'buttonOptions' => [
+                    'class' => 'btn btn-info',
                 ],
             ],
             'create'  => [
