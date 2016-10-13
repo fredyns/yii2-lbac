@@ -22,13 +22,15 @@ use kartik\icons\Icon;
  * @property string $allowView is allowing accessing view page
  * @property string $allowCreate is allowing accessing create page
  * @property string $allowUpdate is allowing accessing update page
- * @property string $allowDelete is allowing accessing delete model
+ * @property string $allowDelete is allowing to delete model
+ * @property string $allowRestore is allowing to restore model
  * 
  * @property array $urlIndex url config for Index page
  * @property array $urlCreate url config for Create page
  * @property array $urlView url config for View page
  * @property array $urlUpdate url config for Update page
- * @property array $urlDelete url config for Delete page
+ * @property array $urlDelete url config for Delete
+ * @property array $urlRestore url config for Restore 
  *
  * @property string $linkTo link o view detail
  */
@@ -98,7 +100,7 @@ class ActionControl extends \yii\base\Object
      * @param string $action
      * @return boolean
      */
-    public function allow($action)
+    public function allow($action, $throwError = FALSE)
     {
         if (array_key_exists($action, $this->allowed) == FALSE)
         {
@@ -110,8 +112,16 @@ class ActionControl extends \yii\base\Object
             }
             else
             {
-                return FALSE;
+                $this->addError($action, 'Not Allowed Action.');
+                $this->allowed[$action] = FALSE;
             }
+        }
+
+        if ($this->allowed[$action] == FALSE && $throwError)
+        {
+            $message = $this->getError($action, TRUE);
+
+            throw new ForbiddenHttpException($message);
         }
 
         return $this->allowed[$action];
@@ -210,6 +220,40 @@ class ActionControl extends \yii\base\Object
 
         // conclusion
         return ($this->isError('delete') == FALSE);
+    }
+
+    /**
+     * check permission to restore model
+     *
+     * @return boolean
+     */
+    public function getAllowRestore()
+    {
+        // prerequisites
+        if (($this->model instanceof ActiveRecord) == FALSE)
+        {
+            $this->addError('restore', "Unknown Data.");
+
+            return FALSE;
+        }
+
+        // blacklist
+        if ($this->model->isNewRecord)
+        {
+            $this->addError('restore', "Can't restore undeleted Data.");
+        }
+
+        if ($this->model->hasAttribute('recordStatus') == FALSE OR $this->model->hasAttribute('deleted_at') == FALSE)
+        {
+            $this->addError('restore', "Data doesn't support soft-delete.");
+        }
+        elseif ($this->model->getAttribute('recordStatus') != 'deleted')
+        {
+            $this->addError('restore', "Data is not deleted.");
+        }
+
+        // conclusion
+        return ($this->isError('restore') == FALSE);
     }
 
     /**
@@ -322,6 +366,20 @@ class ActionControl extends \yii\base\Object
         return [];
     }
 
+    public function getUrlRestore()
+    {
+        if ($this->model instanceof ActiveRecord)
+        {
+            $param       = $this->modelParam();
+            $param[0]    = $this->actionRoute('restore');
+            $param['ru'] = ReturnUrl::getToken();
+
+            return $param;
+        }
+
+        return [];
+    }
+
     /**
      * get default action list
      *
@@ -333,7 +391,7 @@ class ActionControl extends \yii\base\Object
         {
             if ($this->model->isNewRecord == FALSE)
             {
-                return ['view', 'update', 'delete'];
+                return ['view', 'update', 'delete', 'restore'];
             }
         }
 
@@ -348,7 +406,7 @@ class ActionControl extends \yii\base\Object
     public function actions()
     {
         return [
-            'index'  => [
+            'index'   => [
                 'label'         => 'List',
                 'url'           => $this->urlIndex,
                 'icon'          => Icon::show('list'),
@@ -361,7 +419,7 @@ class ActionControl extends \yii\base\Object
                     'class' => 'btn btn-default',
                 ],
             ],
-            'create' => [
+            'create'  => [
                 'label'         => 'Create',
                 'url'           => $this->urlCreate,
                 'icon'          => Icon::show('plus'),
@@ -374,7 +432,7 @@ class ActionControl extends \yii\base\Object
                     'class' => 'btn btn-info',
                 ],
             ],
-            'view'   => [
+            'view'    => [
                 'label'         => 'View',
                 'url'           => $this->urlView,
                 'icon'          => Icon::show('eye'),
@@ -387,7 +445,7 @@ class ActionControl extends \yii\base\Object
                     'class' => 'btn btn-primary',
                 ],
             ],
-            'update' => [
+            'update'  => [
                 'label'         => 'Update',
                 'url'           => $this->urlUpdate,
                 'icon'          => Icon::show('pencil', ['style' => 'color: blue;']),
@@ -400,7 +458,7 @@ class ActionControl extends \yii\base\Object
                     'class' => 'btn btn-success',
                 ],
             ],
-            'delete' => [
+            'delete'  => [
                 'label'         => 'Delete',
                 'url'           => $this->urlDelete,
                 'icon'          => Icon::show('trash', ['style' => 'color: red;']),
@@ -413,6 +471,16 @@ class ActionControl extends \yii\base\Object
                 ],
                 'buttonOptions' => [
                     'class' => 'btn btn-danger',
+                ],
+            ],
+            'restore' => [
+                'label'   => 'Restore',
+                'url'     => $this->urlRestore,
+                'icon'    => Icon::show('retweet', ['style' => 'color: blue;']),
+                'options' => [
+                    'title'      => 'Restore this data',
+                    'aria-label' => 'Restore',
+                    'data-pjax'  => '0',
                 ],
             ],
         ];
@@ -725,11 +793,12 @@ class ActionControl extends \yii\base\Object
     public function breadcrumbLabels()
     {
         return [
-            'index'  => 'List',
-            'create' => 'Create',
-            'view'   => '#'.implode('-', $this->modelParam()),
-            'update' => 'Edit',
-            'delete' => 'Delete',
+            'index'   => 'List',
+            'create'  => 'Create',
+            'view'    => '#'.implode('-', $this->modelParam()),
+            'update'  => 'Edit',
+            'delete'  => 'Delete',
+            'restore' => 'Restore',
         ];
     }
 
