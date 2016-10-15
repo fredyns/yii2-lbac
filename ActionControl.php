@@ -232,6 +232,14 @@ class ActionControl extends \yii\base\Object
             $this->addError('delete', "Can't delete unsaved Data.");
         }
 
+        if ($this->model->hasAttribute('recordStatus') && $this->model->hasAttribute('deleted_at'))
+        {
+            if ($this->model->getAttribute('recordStatus') == 'deleted')
+            {
+                $this->addError('delete', "Data already (soft) deleted.");
+            }
+        }
+
         // conclusion
         return ($this->isError('delete') == FALSE);
     }
@@ -432,7 +440,7 @@ class ActionControl extends \yii\base\Object
                 'label'         => 'List',
                 'url'           => $this->urlIndex,
                 'icon'          => Icon::show('list'),
-                'options'       => [
+                'linkOptions'   => [
                     'title'      => 'Search this data',
                     'aria-label' => 'Index',
                     'data-pjax'  => '0',
@@ -445,7 +453,7 @@ class ActionControl extends \yii\base\Object
                 'label'         => 'Deleted',
                 'url'           => $this->urlDeleted,
                 'icon'          => Icon::show('trash'),
-                'options'       => [
+                'linkOptions'   => [
                     'title'      => 'Deleted data',
                     'aria-label' => 'Deleted',
                     'data-pjax'  => '0',
@@ -470,8 +478,8 @@ class ActionControl extends \yii\base\Object
             'view'    => [
                 'label'         => 'View',
                 'url'           => $this->urlView,
-                'icon'          => Icon::show('eye'),
-                'options'       => [
+                'icon'          => Icon::show('zoom-in'),
+                'linkOptions'   => [
                     'title'      => 'View this data',
                     'aria-label' => 'View',
                     'data-pjax'  => '0',
@@ -483,8 +491,8 @@ class ActionControl extends \yii\base\Object
             'update'  => [
                 'label'         => 'Update',
                 'url'           => $this->urlUpdate,
-                'icon'          => Icon::show('pencil', ['style' => 'color: blue;']),
-                'options'       => [
+                'icon'          => Icon::show('pencil'),
+                'linkOptions'   => [
                     'title'      => 'Update this data',
                     'aria-label' => 'Update',
                     'data-pjax'  => '0',
@@ -496,8 +504,8 @@ class ActionControl extends \yii\base\Object
             'delete'  => [
                 'label'         => 'Delete',
                 'url'           => $this->urlDelete,
-                'icon'          => Icon::show('trash', ['style' => 'color: red;']),
-                'options'       => [
+                'icon'          => Icon::show('trash'),
+                'linkOptions'   => [
                     'title'        => 'Delete this data',
                     'aria-label'   => 'Delete',
                     'data-pjax'    => '0',
@@ -509,13 +517,17 @@ class ActionControl extends \yii\base\Object
                 ],
             ],
             'restore' => [
-                'label'   => 'Restore',
-                'url'     => $this->urlRestore,
-                'icon'    => Icon::show('retweet', ['style' => 'color: blue;']),
-                'options' => [
-                    'title'      => 'Restore this data',
-                    'aria-label' => 'Restore',
-                    'data-pjax'  => '0',
+                'label'         => 'Restore',
+                'url'           => $this->urlRestore,
+                'icon'          => Icon::show('retweet'),
+                'linkOptions'   => [
+                    'title'        => 'Restore this data',
+                    'aria-label'   => 'Restore',
+                    'data-pjax'    => '0',
+                    'data-confirm' => 'Are you sure to restore this item?',
+                ],
+                'buttonOptions' => [
+                    'class' => 'btn btn-info',
                 ],
             ],
         ];
@@ -715,7 +727,7 @@ class ActionControl extends \yii\base\Object
                 if ($param && $allow)
                 {
                     $icon           = ArrayHelper::remove($param, 'icon');
-                    $param['label'] = $icon.' '.$param['label'];
+                    $param['label'] = $icon.'&nbsp; '.$param['label'];
                     $params[]       = $param;
                     $lastParam      = $param;
                     $count++;
