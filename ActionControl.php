@@ -815,21 +815,27 @@ class ActionControl extends \yii\base\Object
     /**
      * generate link to page that show model detail
      *
-     * @param array $linkOptions
+     * @param array $options
      * @return string
      */
-    public function getLinkTo($linkOptions = ['title' => 'view detail'])
+    public function getLinkTo($options = ['title' => 'view detail'])
     {
-        $label = ArrayHelper::remove($linkOptions, 'label', $this->modelLabel());
+        if (is_string($options))
+        {
+            $options = ['label' => $options];
+        }
+
+        if (array_key_exists('label', $options) == FALSE)
+        {
+            $options['label'] = $this->modelLabel();
+        }
 
         if ($this->allow('view'))
         {
-            return Html::a($label, $this->urlView, $linkOptions);
+            return $this->a('view', $options);
         }
-        else
-        {
-            return $label;
-        }
+
+        return $options['label'];
     }
 
     /**
