@@ -41,7 +41,7 @@ class LinkedDetail extends \yii\base\Widget
 
         if (is_scalar($label) == FALSE)
         {
-            $label = null;
+            $label = 'view';
         }
 
         if (empty($this->actionControl))
@@ -56,7 +56,13 @@ class LinkedDetail extends \yii\base\Widget
 
         if ($actionControl instanceof ActionControl)
         {
-            return $actionControl->getLinkTo($label);
+            return $actionControl->getLinkTo([
+                    'label'       => $label,
+                    'linkOptions' => [
+                        'title'  => 'click to view this data',
+                        'target' => '_blank',
+                    ],
+            ]);
         }
 
         return $label;
