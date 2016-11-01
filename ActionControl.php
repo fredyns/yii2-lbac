@@ -466,8 +466,8 @@ class ActionControl extends \yii\base\Object
                 'label'         => 'Create',
                 'url'           => $this->urlCreate,
                 'icon'          => Icon::show('plus'),
-                'options'       => [
-                    'title'      => 'Create this data',
+                'linkOptions'   => [
+                    'title'      => 'Create data',
                     'aria-label' => 'Create',
                     'data-pjax'  => '0',
                 ],
@@ -570,7 +570,7 @@ class ActionControl extends \yii\base\Object
         $params = $this->param($name, $options);
 
         $label       = ArrayHelper::getValue($params, 'label');
-        $linkOptions = ArrayHelper::getValue($params, 'options', []);
+        $linkOptions = ArrayHelper::getValue($params, 'linkOptions', []);
         $urlOptions  = ArrayHelper::getValue($params, 'urlOptions', []);
 
         if ($allow)
