@@ -441,7 +441,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlIndex,
                 'icon'          => Icon::show('list'),
                 'linkOptions'   => [
-                    'title'      => 'Search this data',
+                    'title'      => 'click to open all active data',
                     'aria-label' => 'Index',
                     'data-pjax'  => '0',
                 ],
@@ -454,7 +454,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlDeleted,
                 'icon'          => Icon::show('trash'),
                 'linkOptions'   => [
-                    'title'      => 'Deleted data',
+                    'title'      => 'click to open all deleted data',
                     'aria-label' => 'Deleted',
                     'data-pjax'  => '0',
                 ],
@@ -467,7 +467,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlCreate,
                 'icon'          => Icon::show('plus'),
                 'linkOptions'   => [
-                    'title'      => 'Create data',
+                    'title'      => 'click to create new record',
                     'aria-label' => 'Create',
                     'data-pjax'  => '0',
                 ],
@@ -480,7 +480,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlView,
                 'icon'          => Icon::show('zoom-in'),
                 'linkOptions'   => [
-                    'title'      => 'View this data',
+                    'title'      => 'click to view this data',
                     'aria-label' => 'View',
                     'data-pjax'  => '0',
                 ],
@@ -493,7 +493,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlUpdate,
                 'icon'          => Icon::show('pencil'),
                 'linkOptions'   => [
-                    'title'      => 'Update this data',
+                    'title'      => 'click to edit this data',
                     'aria-label' => 'Update',
                     'data-pjax'  => '0',
                 ],
@@ -506,7 +506,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlDelete,
                 'icon'          => Icon::show('trash'),
                 'linkOptions'   => [
-                    'title'        => 'Delete this data',
+                    'title'        => 'click to delete this data',
                     'aria-label'   => 'Delete',
                     'data-pjax'    => '0',
                     'data-confirm' => 'Are you sure to delete this item?',
@@ -521,7 +521,7 @@ class ActionControl extends \yii\base\Object
                 'url'           => $this->urlRestore,
                 'icon'          => Icon::show('retweet'),
                 'linkOptions'   => [
-                    'title'        => 'Restore this data',
+                    'title'        => 'click to restore this data',
                     'aria-label'   => 'Restore',
                     'data-pjax'    => '0',
                     'data-confirm' => 'Are you sure to restore this item?',
@@ -818,17 +818,14 @@ class ActionControl extends \yii\base\Object
      * @param array $options
      * @return string
      */
-    public function getLinkTo($options = ['title' => 'view detail'])
+    public function getLinkTo($options = [])
     {
         if (is_string($options))
         {
             $options = ['label' => $options];
         }
 
-        if (array_key_exists('label', $options) == FALSE)
-        {
-            $options['label'] = $this->modelLabel();
-        }
+        $options = ArrayHelper::merge($options, ['label' => $this->modelLabel()]);
 
         if ($this->allow('view'))
         {
